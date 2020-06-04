@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% block title %} 吳聲涫 shop {% endblock %}
+{% block content %}
+{% load static %}
+
+    <div class="container" id="cartContainer">
+        {% if product_list %}
+            <div class="row mt-4 cart-title">
+                購物車
+            </div>
+            <div class="row purchase mt-4 items-center">
+                <div class="col-lg-1 my-3">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="checkboxAll">
+                        <label class="custom-control-label" for="checkboxAll"></label>
+                    </div>
+                </div>
+                <div class="col-lg-4 ">
+                    商品
+                </div>
+                <div class="col-lg-2">
+                    單價
+                </div>
+                <div class="col-lg-2">
+                    數量
+                </div>
+                <div class="col-lg-2">
+                    總價
+                </div>
+                <div class="col-lg-1">
+                    操作
+                </div>
+            </div>
+            {% for unit in product_list %}
+                <div class="row purchase mt-4">
+                    <div class="col-lg-1 my-5 items-center">
+                        <!-- Default unchecked -->
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input product-checkbox" id="checkbox{{ unit.0.id }}">
+                            <label class="custom-control-label" for="checkbox{{ unit.0.id }}"></label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row my-3">
+                            <div class="col-lg-3">
+                                <a href="/items/{{unit.0.id}}"><img src="{{unit.0.srcset}}" style="max-height: 100px; max-width: 100px;"></a>
+                            </div>
+                            <div class="col-lg-9 cart-item-name">
+                                <a href="">{{unit.0.title}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 items-center my-5">{{unit.0.money}}
+                    </div>
+                    <div class="col-lg-2 items-center">
+                        <div class="row items-center my-5">
+                            <div class="col-lg-3"></div>
+                            <button id="itemNumberMinusButto{{ unit.0.id }}" class="item-button minus-button" onclick="NumberMinus{{unit.0.id}}()">
+                                <svg class="item-svg" enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0">
+                                    <polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon>
+                                </svg>
+                            </button>
+                            <input id="itemNumberInput{{ unit.0.id }}" class="item-button-mid item-number-input" type="text" value="{{ unit.1 }}">
+                            <button id="itemNumberPlusButton{{ unit.0.id }}" class="item-button plus-button" onclick="NumberPlus{{unit.0.id}}()">
+                                <svg class="item-svg" enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0">
+                                    <polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5">
+                                    </polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 items-center my-5" style="color: #ee4d2d;">
+                        <span class="total-price" id="totalPrice{{ unit.0.id }}" text="{{ unit.2 }}">{{ unit.2 }}</span>
+                    </div>
+                    <div class="col-lg-1 items-center my-5">
+                        <button class="remove-from-cart-button" id="removeFromCartButton{{ unit.0.id }}">刪除</button>
+                    </div>
+                </div>
+               <script>
+                function NumberMinus{{ unit.0.id }}(){
+                        var $itemCount = $('#itemNumberInput{{unit.0.id}}').val();
+                        itemIne=parseInt($itemCount)
+                        if (itemIne>0)
+                        {
+                            itemIne-=1
+                            $('#itemNumberInput{{ unit.0.id }}').val(itemIne);
+                        }
+                        var total_money={{unit.0.money}}*itemIne;
+                        $('#totalPrice{{ unit.0.id }}').html(total_money);
+                    }
+                </script>
+                <script>
+                    function NumberPlus{{ unit.0.id }}(){
+                        var $itemCount = $('#itemNumberInput{{ unit.0.id }} ').val();
+                        itemIne=parseInt($itemCount)
+                        itemIne+=1
+                        $('#itemNumberInput{{ unit.0.id }}').val(itemIne);
+                        var total_money={{unit.0.money}}*itemIne;
+                        $('#totalPrice{{ unit.0.id }}').html(total_money);
+                    }
+                </script>
+            {% endfor %}
+            <div class="row purchase mt-4">
+                <div class="col-lg-6 my-3">
+                    
+                </div>
+                <div class="col-lg-4 my-3" style="text-align: right">
+                    <div class="cart-page-footer-summary__subtotal-text" id="totalprice">
+                        購買總金額 ({{buy_product_count}} 個商品):
+                    </div>
+                    <div class="cart-page-footer-summary__subtotal-amount" id="all_money">
+                        ${{buy_product_money}}
+                    </div>
+                </div>
+                <div class="col-lg-2 my-3">
+                    <button id="cart-page-buy-button"  class="cart-page--empty__button">
+                        <span class="cart-page--empty__action-text">
+                            結帳
+                        </span>
+                    </button>
+                </div>
+                <script>
+                    $(".minus-button").click(function()
+                    {
+                        var totalprice = 0;
+                        var totalcount = 0;
+                        $(".item-button-mid").each(function()
+                        {
+                            $this=$(this);
+                            var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');
+                            var $product_number = $('#itemNumberInput'+ $product_id).val();
+                            totalcount+=parseInt($product_number);
+                        });
+                        $("#totalprice").html("購買總金額( "+totalcount+" 個商品)");
+                        $(".total-price").each(function()
+                        {
+                            $this=$(this);
+                            var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');
+                            var $product_price = $($this).attr("text").replace(/[^0-9\.]/g, '');
+                            var $itemCount = $('#itemNumberInput'+$product_id).val();
+                            var $product_money = $itemCount*$product_price
+                            totalprice+=parseInt($product_money);
+                        });
+                        $('#all_money').html('$'+totalprice);
+                    });
+                </script>
+                <script>
+                    $(".plus-button").click(function()
+                    {
+                        var totalprice = 0;
+                        var totalcount = 0;
+                        $(".item-button-mid").each(function()
+                        {
+                            $this=$(this);
+                            var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');
+                            var $product_number = $('#itemNumberInput'+ $product_id).val();
+                            totalcount+=parseInt($product_number);
+                        });
+                        $("#totalprice").html("購買總金額( "+totalcount+" 個商品)");
+                        $(".total-price").each(function()
+                        {
+                            $this=$(this);
+                            var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');
+                            var $product_price = $($this).attr("text").replace(/[^0-9\.]/g, '');
+                            var $itemCount = $('#itemNumberInput'+$product_id).val();
+                            var $product_money = $itemCount*$product_price
+                            totalprice+=parseInt($product_money);
+                        });
+                        $('#all_money').html('$'+totalprice);
+                    });
+                </script>
+                <script>
+                    $("#cart-page-buy-button").click(function()
+                    {
+                        var product_list = [];
+                        var json_data = {};
+                        $(".product-checkbox").each(function ()
+                        {
+                            $this=$(this);
+                            if (this.checked)
+                            {
+                                var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');  //抓ID內的數字
+                                var $product_number = $('#itemNumberInput'+ $product_id).val();
+                                product_list.push([parseInt($product_id), parseInt($product_number)]);
+                            }
+                         });
+                        if (product_list.length ==0)
+                        {
+                               swal({
+                                    title: "購買失敗！",
+                                    text: "尚未選取任何商品！",
+                                    icon: "error",
+                                    timer: 1500
+                                });
+                        }
+                        else{
+                            $.ajax
+                            ({
+                                type: "POST",
+                                url: "/product_ajax/checkout/",
+                                data: {"product_list": JSON.stringify(product_list)},
+                                success: function (result)
+                                {
+                                    if (result["status"]==true)
+                                    {
+                                        swal({
+                                                title: "購買成功！",
+                                                text: result["errmsg"],
+                                                icon: "success",
+                                                timer: 1500
+                                            });
+                                         $('#cartContainer').load('#cartContainer');
+                                    }
+
+                                    else
+                                    {
+                                           swal({
+                                                title: "購買失敗！",
+                                                text: result["errmsg"],
+                                                icon: "error",
+                                                timer: 1500
+                                            });
+                                    }
+                                }
+                            });
+                            }
+                    })
+                </script>
+            </div>
+        {% else %}
+            <div class="cart-page--empty">
+                <div class="cart-page--empty__image"></div>
+                <div class="cart-page--empty__text">你的購物車還是空的</div><a class="cart-page--empty__action" href="/">
+                    <button class="cart-page--empty__button">
+                        <span class="cart-page--empty__action-text">去購物吧！
+                        </span>
+                    </button>
+                </a>
+            </div>
+            <div class="cart-page__recommend"></div>
+        {% endif %}
+
+    <script>
+    $(".remove-from-cart-button").click(function (e) {
+                $this = $(this);
+                var $product_id = parseInt($($this).attr("id").replace('removeFromCartButton', ''))
+                swal
+                ({
+                    title: "你確定要移除這個商品嗎？",
+                    text: "",
+                    icon: "warning",
+                    buttons: ["取消", "確定"],
+                    dangerMode: true
+                }).then((isConfirm) =>
+                {
+                    if (isConfirm)
+                    {
+                        $.ajax
+                        ({
+                            type: "POST",
+                            url: "/product_ajax/del_buy_car/",
+                            data: {"product_id":$product_id},
+                            success: function (result)
+                            {
+                                  if (result["status"]==true)
+                                  {
+                                        swal
+                                        ({
+                                            title: "商品已從購物車移除！",
+                                            text: "",
+                                            icon: "success",
+                                            timer: 1500
+                                        });
+                                        $('#cartContainer').load('#cartContainer');
+                                  }
+                                  else
+                                  {
+                                        swal
+                                        ({
+                                            title: "商品移除失敗！",
+                                            text: result["errmsg"],
+                                            icon: "error",
+                                            timer: 1500
+                                        });
+                                  }
+                            }});
+                        }
+                    });
+                });
+    </script>
+    </div>
+{% endblock %}

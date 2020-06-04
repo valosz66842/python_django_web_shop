@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %} 吳聲涫 shop {% endblock %}
+{% block content %}
+{% load static %}
+<div class="container">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="index-content">
+                <div class="container">
+
+                    <div class="row my-4 items-center" style="align-items: center; -webkit-box-align: center; display: flex;">
+                        <div class="col-4"></div>
+                        <h1 class="col-4 items-center">限時特賣專區</h1>
+                        <div class="col-4"></div>
+                    </div>
+                    <div class="row">
+                        {% for p in product_list %}
+                        <div class="col-lg-12 col-md-12 mb-4 mt-3">
+                            <div class="card h-100">
+                                <div class="row items-center">
+
+                                    <div class="col-4"></div>
+                                        <div class="col-4 items-center">
+                                            <h3 class="items-center my-4 mx-4" style="color: #FF0000; font-weight: bold">限時搶購中！！</h3>
+                                        </div>
+
+                                        <div class="col-2"></div>
+
+                                        <div class="col-2"></div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 my-4">
+                                        <a href=""><img class="card-img-top product-image"
+                                                src="{{p.srcset}}" alt=""></a>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div>
+                                         <div class="col-8">
+                                            <ul>
+                                                <li class="li-time-counter"><span class="li-span-time-counter" id="starttime{{p.id}}"></span>搶購開始時間:{{p.starttime}}</li>
+                                                <li class="li-time-counter"><span class="li-span-time-counter" id="endtime{{p.id}}"></span>搶購結束時間:{{p.endtime}}</li>
+                                                <li class="li-time-counter"><span class="li-span-time-counter" id="price{{p.id}}}"></span>特價:{{p.price}}</li>
+                                                <li class="li-time-counter"><span class="li-span-time-counter" id="limitquantity{{p.id}}"></span>每人限購:{{p.limitquantity}}件</li>
+                                            </ul>
+                                        </div>
+                                            <div class="row my-4">
+                                                <h6 class="card-title product-title">
+                                                    <a href=""></a>
+                                                </h6>
+                                            </div>
+                                            <div class="row my-4">
+                                                <h5></h5>
+                                            </div>
+                                        </div>
+                                    <div class="cart-page-footer-summary__subtotal-amount" id="all_money">
+                                        <button id="cart-page-buy-button"  class="cart-page--empty__button">
+                                                        <span class="cart-page--empty__action-text">
+                                                            進入頁面
+                                                        </span>
+                                            </button>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+                <!-- /.col-lg-9 -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

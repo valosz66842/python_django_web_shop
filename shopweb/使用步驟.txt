@@ -1,0 +1,9 @@
+pip install -r requirements.txt
+
+打開命令提示字元
+cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+mysql -u -p udn < db.sql
+
+python manage.py inspectdb > ./main/models.py
+python manage.py makemigrations main
+python manage.py migrate

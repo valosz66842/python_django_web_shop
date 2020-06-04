@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %} 吳聲涫 shop {% endblock %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <h1 class="my-4">吳聲涫 shop</h1>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="index-content">
+                <div class="container">
+                    <div class="row">
+                        <h5 class="my-4">「{{ keyword }}」的搜尋結果如下，共有 {{ productcount }} 個商品</h5>
+                    </div>
+                    <div class="row">
+                        {% for p in product %}
+                        <div class="col-lg-4 col-md-6 mb-4 my-4">
+                            <div class="card h-100">
+                                <a href="{{base_url}}items/{{p.id}}"><img class="card-img-top product-image"
+                                        src="{{p.srcset}}" alt=""></a>
+                                <div class="card-body">
+                                    <h5>{{p.sell}}</h5>
+                                    <h5>售價{{p.money}}元</h5>
+                                    <p class="card-text">{{p.title}}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted float-left">&#9733; &#9733; &#9733; &#9733; &#9734; 已售出{{p.sold}}件
+                                        </small>
+                                    <small class="text-muted float-right"></small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+                <!-- /.col-lg-9 -->
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

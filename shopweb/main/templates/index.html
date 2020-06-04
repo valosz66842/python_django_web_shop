@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %} 吳聲涫Shop {% endblock %}
+{% block content %}
+{% load static %}
+    <style type="text/css">
+    #layoutSidenav{
+    height:1150px;
+    overflow-y: auto;//當div中y方向的內容溢位時，y軸分別顯示滾動條
+    border:1px solid red;
+    }
+    </style>
+<div class="full-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner" role="listbox">
+            {% for c in carousel %}
+              {% if forloop.first %}
+              <div class="carousel-item banner-image active">
+                <img class="d-block img-fluid" src="{% static c.img_path %}" alt="{{ c.name }}">
+              </div>
+              {% else %}
+              <div class="carousel-item banner-image">
+                <img class="d-block img-fluid" src="{% static c.img_path %}" alt="{{ c.name }}">
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12"><!--https://cf.shopee.tw/file/d8ed5a27bd7d8b97e8e16887cf275e5d-->
+            <div class="my-2"><img style="max-width: 100%" src="{% static 'images/d8ed5a27bd7d8b97e8e16887cf275e5d.png' %}"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /.row -->
+  </div>
+</div>
+
+<!--商品-->
+<div class="index-content">
+  <div class="container">
+    <div class="row" id="product_list">
+
+    </div>
+    <!-- /.row -->
+    </div>
+    <!-- /.col-lg-9 -->
+</div>
+                    <script>
+                        //可在Javascript中使用如同C#中的string.format
+                    //使用方式 : var fullName = String.format('Hello. My name is {0} {1}.', 'FirstName', 'LastName');
+                    String.format = function ()
+                    {
+                        var s = arguments[0];
+                        if (s == null) return "";
+                        for (var i = 0; i < arguments.length - 1; i++)
+                        {
+                            var reg = getStringFormatPlaceHolderRegEx(i);
+                            s = s.replace(reg, (arguments[i + 1] == null ? "" : arguments[i + 1]));
+                        }
+                        return cleanStringFormatResult(s);
+                    }
+                    //可在Javascript中使用如同C#中的string.format (對jQuery String的擴充方法)
+                    //使用方式 : var fullName = 'Hello. My name is {0} {1}.'.format('FirstName', 'LastName');
+                    String.prototype.format = function ()
+                    {
+                        var txt = this.toString();
+                        for (var i = 0; i < arguments.length; i++)
+                        {
+                            var exp = getStringFormatPlaceHolderRegEx(i);
+                            txt = txt.replace(exp, (arguments[i] == null ? "" : arguments[i]));
+                        }
+                        return cleanStringFormatResult(txt);
+                    }
+                    //讓輸入的字串可以包含{}
+                    function getStringFormatPlaceHolderRegEx(placeHolderIndex)
+                    {
+                        return new RegExp('({)?\\{' + placeHolderIndex + '\\}(?!})', 'gm')
+                    }
+                    //當format格式有多餘的position時，就不會將多餘的position輸出
+                    //ex:
+                    // var fullName = 'Hello. My name is {0} {1} {2}.'.format('firstName', 'lastName');
+                    // 輸出的 fullName 為 'firstName lastName', 而不會是 'firstName lastName {2}'
+                    function cleanStringFormatResult(txt)
+                    {
+                        if (txt == null) return "";
+                        return txt.replace(getStringFormatPlaceHolderRegEx("\\d+"), "");
+                    }
+                    </script>
+      <script>
+      $page=[1,2];
+      $($page).each(function(e){
+        $.ajax({
+                                url: "product_ajax/?page="+(e+1) ,//翻頁
+                                data: {},
+                                success: function(data) {
+                                    $news_list = null;
+                                    $results = data["results"];
+                                    var id=1;
+                                    $($results).each(function(e){
+                                                            var temp_news_element = String.format(
+                                                                `<div class="col-lg-4 col-md-6 mb-4 my-4">
+                                                            <div class="card h-100">
+                                                              <a href="{{base_url}}items/{0}"><img class="card-img-top product-image" src="{1}" alt=""></a>
+                                                              <div class="card-body">
+                                                                <h6 class="card-title product-title">
+                                                                  <a href=""></a>
+                                                                </h6>
+                                                                <h5>{2}</h5>
+                                                                <h5>售價{3}元</h5>
+                                                                <p class="card-text">{4}</p>
+                                                              </div>
+                                                              <div class="card-footer">
+                                                                <small class="text-muted float-left">&#9733; &#9733; &#9733; &#9733; &#9734; 已售出{5}件   庫存{6}件</small>
+                                                                <small class="text-muted float-right"></small>
+                                                              </div>
+                                                            </div>
+                                                          </div>`,id,$(this)[0]["srcset"],$(this)[0]["sell"],$(this)[0]["money"],$(this)[0]["title"],$(this)[0]["sold"],($(this)[0]['stock']-$(this)[0]["sold"]));
+                                                          id+=1;
+                                                           $("#product_list").prepend(temp_news_element);
+                                    })
+                                   }
+                               });
+                               })
+      </script>
+
+      <script>
+                    var page = 2;
+                    var scroll=400;
+                    $(window).scroll(function(){
+                        var scrollTop = $(this).scrollTop();
+                    　　var scrollHeight=  $(document).height();
+                    　　var windowHeight = $(this).height();
+                        if(scrollTop>=scroll) //滑到底部
+                        {
+                            page=page+1;
+                            scroll+=500
+                            $.ajax({
+                                url: "product_ajax/?page="+page ,//翻頁
+                                data: {},
+                                success: function(data) {
+                                    $news_list = null;
+                                    $results = data["results"];
+                                    var id=1;
+                                    $($results).each(function(){
+                                                            var temp_news_element = String.format(
+                                                                `<div class="col-lg-4 col-md-6 mb-4 my-4">
+                                                            <div class="card h-100">
+                                                              <a href="{{base_url}}items/{0}"><img class="card-img-top product-image" src="{1}" alt=""></a>
+                                                              <div class="card-body">
+                                                                <h6 class="card-title product-title">
+                                                                  <a href=""></a>
+                                                                </h6>
+                                                                <h5>{2}</h5>
+                                                                <h5>售價{3}元</h5>
+                                                                <p class="card-text">{4}</p>
+                                                              </div>
+                                                              <div class="card-footer">
+                                                                <small class="text-muted float-left">&#9733; &#9733; &#9733; &#9733; &#9734; 已售出{5}件   庫存{6}件</small>
+                                                                <small class="text-muted float-right"></small>
+                                                              </div>
+                                                            </div>
+                                                          </div>`,$(this)[0]["id"],$(this)[0]["srcset"],$(this)[0]["sell"],$(this)[0]["money"],$(this)[0]["title"],$(this)[0]["sold"],($(this)[0]['stock']-$(this)[0]["sold"]));
+                                                          id+=1;
+                                                           $("#product_list").append(temp_news_element);
+                                        })
+                                   }
+                               });
+                        };
+                    })
+      </script>
+
+
+{% endblock %}

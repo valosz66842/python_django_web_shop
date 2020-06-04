@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zxx">
+
+<head>
+<title>Home</title>
+<!-- Meta tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!-- //Meta tags -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all" /><!-- Style-CSS -->
+<link href="{% static 'css/font-awesome.css' %}" rel="stylesheet"><!-- font-awesome-icons -->
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+<section class="w3l-form-36">
+	<div class="form-36-mian section-gap">
+		<div class="wrapper">
+			<div class="form-inner-cont">
+				<h3>登入你的帳號</h3>
+				<form action="" method="post" class="signin-form">
+					{% csrf_token %}
+					<div class="form-input">
+						<span class="fa fa-user-o" aria-hidden="true"></span> <input type="text" name="account" placeholder="你的帳號" required />
+					</div>
+					<div class="form-input">
+						<span class="fa fa-key" aria-hidden="true"></span>
+						<input type="password" name="password" placeholder="密碼" id="password" onkeyup="GetInput()" required />
+					</div>
+					<div class="login-remember d-grid">
+
+						<button class="btn theme-button">登入</button>
+					</div>
+				</form>
+				<div class="social-icons">
+					<p class="continue"><span>Or</span></p>
+					<div class="social-login">
+					<a href="#facebook">
+						<div class="facebook">
+							<span class="fa fa-facebook" aria-hidden="true"></span>
+
+						</div>
+					</a>
+					<a href="#google">
+						<div class="google">
+							<span class="fa fa-google-plus" aria-hidden="true"></span>
+						</div>
+					</a>
+				</div>
+			</div>
+				<p class="signup">還沒有帳號? <a href="/regist/" class="signuplink">註冊</a></p>
+			</div>
+
+			<!-- copyright -->
+
+			<!-- //copyright -->
+		</div>
+	</div>
+</section>
+</body>
+</html>

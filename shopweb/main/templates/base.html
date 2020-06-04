@@ -1,0 +1,677 @@
+{% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Jasper">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <script src='https://www.google.com/recaptcha/api.js?hl=zh-TW'></script>
+    <!-- Custom styles for this template -->
+    <link href="/static/css/shop-homepage.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'js/jquery-3.1.0.js' %}"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    {% load static %}
+    <nav class="navbar-jasper navbar-expand-lg navbar-dark bg-orange fixed-top">
+        <div class="container">
+            <div class="row mt-1">
+                <a target="_blank" rel="noopener noreferrer"
+                    class="navbar-left-text" aria-labelledby="dropdownMenuLink">
+                    <a class="no-padding nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >賣家中心</a></a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <li class="nav-item active">
+                                        <a class="dropdown-item" href="/sellercenter/" >商品列表</a>
+                                    </li>
+                                    <li class="nav-item active" data-toggle="modal" data-target="#UserAddFormModal">
+                                             <a class="nav-link">上傳商品</a>
+                                    </li>
+                                </div>
+                <div class="navbar-left-text">
+                    下載
+                </div>
+                <div class="navbar-left-text-with-no-border">追蹤我們</div>
+                <a href="{{ base_url }}limited_time_sale/" target="_blank" rel="noopener noreferrer" class="navbar-left-text">限時特賣</a>
+                <div class="navbar-left-text-with-no-border mt-1">
+                    <a class="navbar-fb navbar-social-media-icon"
+                        href="https://www.facebook.com/roow197088" target="_blank" rel="noopener noreferrer"
+                        title="追蹤我們 Facebook">
+                    </a>
+                    <a href="https://www.instagram.com/roow197088/" target="_blank"
+                        rel="noopener noreferrer" class="navbar-ig navbar-social-media-icon"
+                        title="追蹤我們 Instagram">
+                    </a>
+                    <a href="https://line.me/R/ti/p/roow197088" target="_blank"
+                        rel="noopener noreferrer" class="navbar-line navbar-social-media-icon" title="追蹤我們 Line">
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto" id="navbarResponsiveUl">
+                        {% if request.session.account == None %}
+                        <li class="nav-item active" data-toggle="modal" data-target="#userRegisterFormModal">
+                            <a class="nav-link">註冊</a>
+                        </li>
+                        <li class="nav-item active" data-toggle="modal" data-target="#userLoginFormModal">
+                            <a class="nav-link">登入</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item active">
+                            <div class="dropdown show">
+                                <a class="no-padding nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                    <img src="{% static 'images/user_default.png' %} " class="dropdown-toggle navbar-thumbnail mr-1">
+                                    {{ request.session.account }}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="">購買清單</a>
+                                    <a class="dropdown-item" href="#">我的帳戶</a>
+                                    <button class="dropdown-item" id="logout">登出</button>
+                                </div>
+                            </div>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+    <nav class="navbar-jasper navbar-expand-lg navbar-dark bg-orange fixed-top-second">
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-lg-2">
+                    <a href="{{ base_url }}" class="navbar-brand-jasper">吳聲涫 Shop</a>
+                </div>
+                <div class="col-lg-9">
+                    <div class="row search-bar">
+                        <div class="search-bar-input" autocomplete="off">
+
+                            <input aria-label="搜尋商品，品牌以及賣場" class="search-bar-input__input mt-2" maxlength="128" placeholder="搜尋商品，品牌以及賣場" autocomplete="off" value="" id="search-bar-input">
+                        </div>
+                        <button type="button" class="search-bar-button" style="color: #fff;" id="search-bar-button">
+                            <svg class="search-bar-button-icon " height="19" viewBox="0 0 19 19" width="19">
+                                <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                    <g transform="translate(-1016 -32)">
+                                        <g>
+                                            <g transform="translate(405 21)">
+                                                <g transform="translate(611 11)">
+                                                    <path
+                                                        d="m8 16c4.418278 0 8-3.581722 8-8s-3.581722-8-8-8-8 3.581722-8 8 3.581722 8 8 8zm0-2c-3.3137085 0-6-2.6862915-6-6s2.6862915-6 6-6 6 2.6862915 6 6-2.6862915 6-6 6z">
+                                                    </path>
+                                                    <path
+                                                        d="m12.2972351 13.7114222 4.9799555 4.919354c.3929077.3881263 1.0260608.3842503 1.4141871-.0086574.3881263-.3929076.3842503-1.0260607-.0086574-1.414187l-4.9799554-4.919354c-.3929077-.3881263-1.0260608-.3842503-1.4141871.0086573-.3881263.3929077-.3842503 1.0260608.0086573 1.4141871z">
+                                                    </path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="row">
+                    </div>
+                </div>
+                <div class="col-lg-1 mt-1 ">
+                    <div>
+                        <div class="mt-1">
+                            <div class="cart-drawer pl-4" onclick="location.href='{{ base_url }}cart/'">
+                                <svg class="cart-icon" viewBox="0 0 26.6 25.6">
+                                    <polyline fill="none" points="2 1.7 5.5 1.7 9.6 18.3 21.2 18.3 24.6 6.1 7 6.1" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2.5"></polyline>
+                                    <circle cx="10.7" cy="23" r="2.2" stroke="none"></circle>
+                                    <circle cx="19.7" cy="23" r="2.2" stroke="none"></circle>
+                                </svg>
+                                {% if cart_number > 0 %}
+                                    <div class="cart-number-badge">{{ cart_number }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal -->
+<div class="modal fade" id="UserAddFormModal" tabindex="-1" role="dialog" aria-labelledby="userRegisterFormTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title col-2" id="userAddProductFormTitle">上傳商品</h5>
+                    <div class="col-3"></div>
+                </div>
+
+                <form id="userAddProductForm" method="POST" class="was-validated">
+                    {% csrf_token %}
+                    {% for field in productForm %}
+                        <div class="modal-body">
+                                {{ field }}
+                                <div class="valid-feedback">有效！</div>
+                                <div class="invalid-feedback">請填寫此欄位！</div>
+                        </div>
+                    {% endfor %}
+                    <div class="g-recaptcha modal-body" data-sitekey="6LdsRa0UAAAAADQpITuIIQbeN-EWD5E_sGuynjcD"></div>
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row justify-content-end align-items-center">
+                                <div class="col-4"><img src="http://i.stack.imgur.com/FhHRx.gif" class="loadingImage" style="display: none"></div>
+                                <div class="col-4"><input type="button" class="btn btn-secondary btn-block" data-dismiss="modal" value="取消"></div>
+                                <div class="col-4"><input type="submit" class="btn btn-primary btn-block"  value="送出" name="file" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <script>
+     Get_date_new = function ()
+     {
+            var date = new Date();
+            var newdate=''
+            newdate+=date.getFullYear();
+            newdate+=date.getMonth();
+            newdate+=date.getDate();
+            newdate+=date.getHours();
+            newdate+=date.getMinutes();
+            newdate+=date.getSeconds();
+
+            return newdate;
+     }
+    </script>
+
+    <script>
+
+        var newdate= Get_date_new();
+        $('#userAddProductForm').submit(function(e){
+            var form = $(this);
+            var formData = new FormData();
+            formData.append('title', $('#id_title').val())
+            formData.append('money', $('#id_money').val())
+            formData.append('stock', $('#id_stock').val())
+            formData.append('srcset', document.getElementById("id_srcset").files[0])
+            $.ajax({
+                        type: "POST",
+                        url: "/product_ajax/addProduct/",
+                        data: formData,
+                        processData:false,
+                        contentType:false,
+                        success: function (result)
+                        {
+                            alert(result["status"]);
+                            if (result["status"] == true)
+                            {
+                                   swal({
+                                        title: "新增商品成功！",
+                                        text: result["errmsg"],
+                                        icon: "success",
+                                        timer: 1500
+                                    });
+                            }
+                            else
+                            {
+                                     swal({
+                                        title: "新增商品失敗！",
+                                        text: result["errmsg"],
+                                        icon: "error",
+                                        timer: 1500
+                                    });
+                            }
+                        }
+
+         });
+         e.preventDefault();
+        });
+    </script>
+    <div class="modal fade" id="userRegisterFormModal" tabindex="-1" role="dialog" aria-labelledby="userRegisterFormTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title col-2" id="userRegisterFormTitle">註冊</h5>
+                    <div class="col-3"></div>
+                    <button id="userResendActivationEmailButton" class="modal-title align-items-end btn" onclick=bindResendActivationModal()>沒有收到驗證信？</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="userRegisterForm" method="POST" class="was-validated">
+                    {% csrf_token %}
+                    {% for field in usersForm %}
+                        <div class="modal-body">
+                                {{ field }}
+                                <div class="valid-feedback">有效！</div>
+                                <div class="invalid-feedback">請填寫此欄位！</div>
+                        </div>
+                        {% if field.id_for_label == 'id_password' %}
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="password" name="confirm_password" class="form-control" placeholder="確認密碼" maxlength="255" required id="id_confirm_password">
+                                <div class="valid-feedback">有效！</div>
+                                <div class="invalid-feedback">請確認密碼是否相同！</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                     <div class="g-recaptcha modal-body" data-sitekey="6LdsRa0UAAAAADQpITuIIQbeN-EWD5E_sGuynjcD"></div>
+
+
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row justify-content-end align-items-center">
+                                <div class="col-4"><img src="http://i.stack.imgur.com/FhHRx.gif" class="loadingImage" style="display: none"></div>
+                                <div class="col-4"><input type="button" class="btn btn-secondary btn-block" data-dismiss="modal" value="取消"></div>
+                                <div class="col-4"><input type="submit" class="btn btn-primary btn-block" value="註冊"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userLoginFormModal" tabindex="-1" role="dialog" aria-labelledby="userLoginFormTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title col-2" id="userLoginFormTitle">登入</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="userLoginForm" method="POST" class="was-validated">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="auth-error"></div>
+                        <input type="text" name="login_account" class="form-control is-valid" placeholder="Email / 手機號碼" maxlength="255" required id="id_login_account">
+                        <div class="invalid-feedback">無效的帳號！</div>
+                    </div>
+                    <div class="modal-body">
+                        <input type="password" name="login_password" class="form-control" placeholder="密碼" maxlength="255" required id="id_login_password">
+                        <div class="invalid-feedback">密碼長度需為4-16個字母！</div>
+                    </div>
+                    <div class="g-recaptcha modal-body" data-sitekey="6LdsRa0UAAAAADQpITuIIQbeN-EWD5E_sGuynjcD"></div>
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row justify-content-end align-items-center">
+                                <div class="col-4"><input type="button" class="btn btn-secondary btn-block"
+                                        data-dismiss="modal" value="取消"></div>
+                                <div class="col-4"><input type="submit" class="btn btn-primary btn-block" value="登入"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userResendActivationEmailFormModal" tabindex="-1" role="dialog" aria-labelledby="userResendActivationEmailFormTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userResendActivationEmailFormTitle">重新寄出驗證信</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="userResendActivationEmailForm" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="email" name="reactivate_email" class="form-control" placeholder="請輸入註冊信箱" maxlength="255" required
+                                id="id_reactivate_email">
+                        </div>
+                    </div>
+
+                    <div class="g-recaptcha modal-body" data-sitekey="6LdsRa0UAAAAADQpITuIIQbeN-EWD5E_sGuynjcD"></div>
+
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="row justify-content-end align-items-center">
+                                <div class="col-4"><img src="http://i.stack.imgur.com/FhHRx.gif" class="loadingImage" style="display: none">
+                                </div>
+                                <div class="col-4"><input type="button" class="btn btn-secondary btn-block" data-dismiss="modal" value="取消">
+                                </div>
+                                <div class="col-4"><input type="submit" class="btn btn-primary btn-block" id="" value="重新寄信"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingModal" class="loadingModal">
+        <!-- Place at bottom of page -->
+    </div>
+
+    <!-- Page Content -->
+
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="bg-orange footer navbar-fixed-bottom">
+        <div class="container">
+            <p class="m-0 text-center text-white"></p>
+        </div>
+    </footer>
+    <script>
+        function bindResendActivationModal(){
+            $('#userRegisterFormModal').modal('hide');
+            $('#userResendActivationEmailFormModal').modal('toggle');
+        }
+    </script>
+        <script>
+        function bindResendActivationModal(){
+            $('#userRegisterFormModal').modal('hide');
+            $('#userResendActivationEmailFormModal').modal('toggle');
+        }
+
+        $(document).ajaxSend(function (event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            function sameOrigin(url) {
+                // url could be relative or scheme relative or absolute
+                var host = document.location.host; // host + port
+                var protocol = document.location.protocol;
+                var sr_origin = '//' + host;
+                var origin = protocol + sr_origin;
+                // Allow absolute or scheme relative URLs to same origin
+                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                    // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+            }
+            function safeMethod(method) {
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        });
+
+        $(document).on({
+                ajaxStart: function () { $('.loadingImage').show(); },
+                ajaxStop: function () { $('.loadingImage').hide(); }
+            });
+        $(document).ready(function () {
+            var url = new URL(location.href);
+
+            if (url.searchParams.get("ShowLoginModal")){
+                $('#userLoginFormModal').modal('toggle');
+            }
+
+        })
+</script>
+
+        <script>
+        var password = document.getElementById("id_password");
+        var confirm_password = document.getElementById("id_confirm_password");
+
+            function validatePassword() {
+                if (password.value != confirm_password.value) {
+                    confirm_password.setCustomValidity("密碼不相符，請重新確認！");
+                } else {
+                    confirm_password.setCustomValidity('');
+                }
+            }
+
+            password.onchange = validatePassword;
+            confirm_password.onkeyup = validatePassword;
+    </script>
+        </script>
+    <script>
+                        //可在Javascript中使用如同C#中的string.format
+                    //使用方式 : var fullName = String.format('Hello. My name is {0} {1}.', 'FirstName', 'LastName');
+                    String.format = function ()
+                    {
+                        var s = arguments[0];
+                        if (s == null) return "";
+                        for (var i = 0; i < arguments.length - 1; i++)
+                        {
+                            var reg = getStringFormatPlaceHolderRegEx(i);
+                            s = s.replace(reg, (arguments[i + 1] == null ? "" : arguments[i + 1]));
+                        }
+                        return cleanStringFormatResult(s);
+                    }
+                    //可在Javascript中使用如同C#中的string.format (對jQuery String的擴充方法)
+                    //使用方式 : var fullName = 'Hello. My name is {0} {1}.'.format('FirstName', 'LastName');
+                    String.prototype.format = function ()
+                    {
+                        var txt = this.toString();
+                        for (var i = 0; i < arguments.length; i++)
+                        {
+                            var exp = getStringFormatPlaceHolderRegEx(i);
+                            txt = txt.replace(exp, (arguments[i] == null ? "" : arguments[i]));
+                        }
+                        return cleanStringFormatResult(txt);
+                    }
+                    //讓輸入的字串可以包含{}
+                    function getStringFormatPlaceHolderRegEx(placeHolderIndex)
+                    {
+                        return new RegExp('({)?\\{' + placeHolderIndex + '\\}(?!})', 'gm')
+                    }
+                    //當format格式有多餘的position時，就不會將多餘的position輸出
+                    //ex:
+                    // var fullName = 'Hello. My name is {0} {1} {2}.'.format('firstName', 'lastName');
+                    // 輸出的 fullName 為 'firstName lastName', 而不會是 'firstName lastName {2}'
+                    function cleanStringFormatResult(txt)
+                    {
+                        if (txt == null) return "";
+                        return txt.replace(getStringFormatPlaceHolderRegEx("\\d+"), "");
+                    }
+
+    </script>
+        <script>
+      $('#userLoginForm').submit(function(e){
+
+         var login_account = $('#id_login_account').val();
+         var login_password= $('#id_login_password').val();
+         $.ajax({
+                type:"POST",
+                url: "/users/login/",
+                data: {"account": login_account,"password":login_password},
+                success: function (result)
+                {
+
+                    if (result["status"] == true)
+                    {
+                           var temp_news_element = String.format(`
+                        <li class="nav-item active">
+                            <div class="dropdown show">
+                                <a class="no-padding nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                    <img src="{% static 'images/user_default.png' %} " class="dropdown-toggle navbar-thumbnail mr-1">
+                                    {0}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="">購買清單</a>
+                                    <a class="dropdown-item" href="#">我的帳戶</a>
+                                    <button class="dropdown-item" id="logout">登出</button>
+                                </div>
+                            </div>
+                        </li>
+                        `,result["account"]);
+
+                           swal({
+                                title: "登入成功！",
+                                text: "",
+                                icon: "success",
+                                timer: 1500
+                            });
+                            $('#navbarResponsiveUl').html(temp_news_element);
+                    }
+                    else
+                    {
+                             swal({
+                                title: "登入失敗！",
+                                text: result["errmsg"],
+                                icon: "error",
+                                timer: 1500
+                            });
+                    }
+                }
+
+         });
+         e.preventDefault();
+      })
+    </script>
+
+    <script>
+      $('#userResendActivationEmailForm').submit(function(e){
+         var user_email = $('#id_reactivate_email').val();
+         $.ajax({
+                type:"POST",
+                url: {% url 'patch_email' %},
+                data: {"user_email":user_email},
+                success: function (result)
+                {
+
+                    if (result["status"] == false)
+                    {
+                           swal({
+                                title: "重發失敗！",
+                                text: result["errmsg"],
+                                icon: "error",
+                                timer: 1500
+                            });
+                    }
+                    else
+                    {
+                             swal({
+                                title: "重發成功！",
+                                text: "請至信箱收取驗證信並點擊信中的連結進行帳號啟用！",
+                                icon: "success",
+                                timer: 1500
+                            });
+                    }
+                }
+
+         });
+         e.preventDefault();
+      })
+    </script>
+    <script>
+        $('#userRegisterForm').submit(function(e){
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: "/users/regist/",
+                data: form.serialize(),
+                success: function (result)
+                {
+                    if (result["status"]==false)
+                    {
+                           swal({
+                                title: "註冊失敗！",
+                                text: result["errmsg"],
+                                icon: "error",
+                                timer: 1500
+                            });
+                    }
+                    else
+                    {
+                             swal({
+                                title: "註冊成功！",
+                                text: "請至信箱收取驗證信並點擊信中的連結進行帳號啟用！",
+                                icon: "success",
+                                timer: 1500
+                            });
+                    }
+                }
+            });
+            e.preventDefault();
+        })
+    </script>
+    <script>
+
+        $('#search-bar-button').click(function () {
+            var $keyword = $('#search-bar-input').val();
+            if ($keyword != "13"){
+                location.href = "{{base_url}}search/" + $keyword;
+            }
+        })
+    </script>
+    <script>
+        $('#logout').click(function(){
+        $.ajax({
+            type:"POST",
+            url:"/users/logout/",
+            data:{},
+            success: function (result)
+            {var temp_news_element = String.format(`
+                        <li class="nav-item active" data-toggle="modal" data-target="#userRegisterFormModal">
+                            <a class="nav-link">註冊</a>
+                        </li>
+                        <li class="nav-item active" data-toggle="modal" data-target="#userLoginFormModal">
+                            <a class="nav-link">登入</a>
+                        </li>
+
+                   `);
+                $('#navbarResponsiveUl').html(temp_news_element);
+            }
+
+        });
+        })
+    </script>
+
+    <!-- Confirm Password Function-->
+
+
+
+</body>
+
+</html>
+     {% block content %}{% endblock %}

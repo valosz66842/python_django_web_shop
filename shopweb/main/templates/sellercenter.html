@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %} 吳聲涫 shop {% endblock %}
+{% block content %}
+{% load static %}
+    <div class="container" id="cartContainer">
+        {% if product_list %}
+            <div class="row mt-4 cart-title">
+                {{account}}商品列表 {{product_count}}
+            </div>
+            <div class="row purchase mt-4 items-center">
+                <div class="col-lg-1 ">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="checkboxAll">
+                        <label class="custom-control-label" for="checkboxAll"></label>
+                    </div>
+                </div>
+                <div class="col-lg-2 ">
+                    商品
+                </div>
+                <div class="col-lg-2">
+                    原價
+                </div>
+                <div class="col-lg-2">
+                    限購數量
+                </div>
+                <div class="col-lg-1">
+                    特價
+                </div>
+                <div class="col-lg-2">
+                    限購開始時間
+                </div>
+                <div class="col-lg-2">
+                    限購結束時間
+                </div>
+            </div>
+            {% for unit in product_list %}
+                <div class="row purchase mt-4">
+                     <div class="col-lg-1 my-5 items-center">
+                        <!-- Default unchecked -->
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input product-checkbox" id="checkbox{{ unit.id }}">
+                            <label class="custom-control-label" for="checkbox{{ unit.id }}"></label>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="row my-3">
+                            <div class="col-lg-3">
+                                <a href="/items/{{unit.id}}"><img src="{{unit.srcset}}" style="height: 125px; width: 125px;"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 items-center my-5">{{unit.money}}
+                    </div>
+                    <div class="col-lg-2 items-center">
+                        <div class="row items-center my-5">
+                            <div class="col-lg-3"></div>
+                            <button id="itemNumberMinusButto{{ unit.id }}" class="item-button minus-button" onclick="NumberMinus{{unit.id}}()">
+                                <svg class="item-svg" enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0">
+                                    <polygon points="4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5"></polygon>
+                                </svg>
+                            </button>
+                            <input id="itemNumberInput{{ unit.id }}" class="item-button-mid item-number-input" type="text" value="1">
+                            <button id="itemNumberPlusButton{{ unit.id }}" class="item-button plus-button" onclick="NumberPlus{{unit.id}}()">
+                                <svg class="item-svg" enable-background="new 0 0 10 10" viewBox="0 0 10 10" x="0" y="0">
+                                    <polygon points="10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5">
+                                    </polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 items-center my-5" style="color: #ee4d2d;">
+                        <input class="item-button-mid item-number-input" id="special{{ unit.id }}"  value="{{unit.money}}"></input>
+                    </div>
+                    <div class="col-lg-2 items-center my-5">
+                        <input  id="starttime{{ unit.id }}" value="202005071240"></input>
+                    </div>
+
+                     <div class="col-lg-1 items-center my-5">
+                        <input  id="endtime{{ unit.id }}" value="202005072040"></input>
+                    </div>
+                </div>
+               <script>
+                function NumberMinus{{ unit.id }}(){
+                        var $itemCount = $('#itemNumberInput{{unit.id}}').val();
+                        itemIne=parseInt($itemCount)
+                        if (itemIne>0)
+                        {
+                            itemIne-=1
+                            $('#itemNumberInput{{ unit.id }}').val(itemIne);
+                        }
+                        var total_money={{unit.money}}*itemIne;
+                        $('#totalPrice{{ unit.id }}').html(total_money);
+                    }
+                </script>
+                <script>
+                    function NumberPlus{{ unit.id }}(){
+                        var $itemCount = $('#itemNumberInput{{ unit.id }} ').val();
+                        itemIne=parseInt($itemCount)
+                        itemIne+=1
+                        $('#itemNumberInput{{ unit.id }}').val(itemIne);
+                        var total_money={{unit.money}}*itemIne;
+                        $('#totalPrice{{ unit.id }}').html(total_money);
+                    }
+                </script>
+            {% endfor %}
+            <div class="row purchase mt-4">
+                <div class="col-lg-6 my-3">
+                    
+                </div>
+                <div class="col-lg-4 my-3" style="text-align: right">
+                    <div class="cart-page-footer-summary__subtotal-text" id="totalprice">
+
+                    </div>
+                    <div class="cart-page-footer-summary__subtotal-amount" id="all_money">
+
+                    </div>
+                </div>
+                <div class="col-lg-2 my-3">
+                    <button id="cart-page-buy-button"  class="cart-page--empty__button">
+                        <span class="cart-page--empty__action-text">
+                            確定特賣
+                        </span>
+                    </button>
+                </div>
+
+                <script>
+                    $("#cart-page-buy-button").click(function()
+                    {
+                        var product_list = [];
+                        var json_data = {};
+                        $(".product-checkbox").each(function ()
+                        {
+                            $this=$(this);
+                            if (this.checked)
+                            {
+                                var $product_id = $($this).attr("id").replace(/[^0-9\.]/g, '');  //抓ID內的數字
+                                var $limit=$('#itemNumberInput'+$product_id).val();
+                                var $special = $('#special'+ $product_id).val();
+                                var $starttime= $('#starttime'+$product_id).val();
+                                var $endtime= $('#endtime'+$product_id).val();
+                                product_list.push([$limit,$special,$product_id,$starttime,$endtime]);
+                            }
+                         });
+                        $.ajax
+                        ({
+                            type: "POST",
+                            url: "/product_ajax/ajax_time/",
+                            data: {"product_list": JSON.stringify(product_list) },
+                            success: function (result)
+                            {
+                                if (result["status"]==true)
+                                {
+                                    swal({
+                                            title: "限時特價發布成功！",
+                                            text: "",
+                                            icon: "success",
+                                            timer: 1500
+                                        });
+                                     $('#cartContainer').load('#cartContainer');
+                                }
+
+                                else
+                                {
+                                       swal({
+                                            title: "限時特價發布失敗！",
+                                            text: result["errmsg"],
+                                            icon: "error",
+                                            timer: 1500
+                                        });
+                                }
+                            }
+                        });
+                    })
+                </script>
+            </div>
+        {% else %}
+            <div class="cart-page--empty">
+                <div class="cart-page--empty__image"></div>
+                <div class="cart-page--empty__text">你的販售商品還是空的</div><a class="cart-page--empty__action" href="/">
+                    <button class="cart-page--empty__button">
+                        <span class="cart-page--empty__action-text">上傳商品吧！
+                        </span>
+                    </button>
+                </a>
+            </div>
+            <div class="cart-page__recommend"></div>
+        {% endif %}
+
+    <script>
+    </script>
+    </div>
+{% endblock %}

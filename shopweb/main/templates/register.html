@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zxx">
+
+<head>
+<title>Home</title>
+<!-- Meta tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!-- //Meta tags -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all" /><!-- Style-CSS -->
+<link href="{% static 'css/font-awesome.css' %}" rel="stylesheet"><!-- font-awesome-icons -->
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+<section class="w3l-form-36">
+	<div class="form-36-mian section-gap">
+		<div class="wrapper">
+			<div class="form-inner-cont">
+				<h3>註冊你的帳號</h3>
+				<form action="" method="post" class="signin-form">
+					{% csrf_token %}
+					<div class="form-input">
+						<span class="fa fa-user-o" aria-hidden="true"></span> <input type="text" name="account" placeholder="你的帳號" required />
+					</div>
+					<div class="form-input">
+						<span class="fa fa-envelope-o" aria-hidden="true"></span> <input type="email" name="email" placeholder="電子信箱" required />
+					</div>
+					<div class="form-input">
+						<span class="fa fa-key" aria-hidden="true"></span>
+						<input type="password" name="password" placeholder="密碼" id="password" onkeyup="GetInput()" required />
+					</div>
+					<div class="form-input">
+						<span class="fa fa-key" aria-hidden="true"></span>
+						<input type="password" name="two_password" id="two_password" placeholder="確認密碼" onkeyup="GetInput()"  required />
+					</div>
+					<div class="form-input">
+						<span class="fa fa-phone" aria-hidden="true"></span> <input type="text" name="phone" placeholder="手機號碼" required />
+					</div>
+										<div class="form-input">
+						<span class="fa fa-user" aria-hidden="true"></span> <input type="text" name="name" placeholder="你的姓名" required />
+					</div>
+			<a id="password_confirm"></a>
+			<script>
+			  function GetInput(){
+				var password=document.getElementById("password").value;
+				var two_password=document.getElementById("two_password").value;
+				if (password=='' and two_password=='')
+				{
+				   $("#password_confirm").html("未填入密碼");
+				}
+				elif (password != two_password)
+				{
+				   $("#password_confirm").html("兩次密碼不同");
+				}
+				else
+				{
+				   $("#password_confirm").html("兩次密碼相同");
+				}
+			  }
+			</script>
+					<div class="login-remember d-grid">
+
+						<button class="btn theme-button">註冊</button>
+					</div>
+				</form>
+				<div class="social-icons">
+					<p class="continue"><span>Or</span></p>
+					<div class="social-login">
+					<a href="#facebook">
+						<div class="facebook">
+							<span class="fa fa-facebook" aria-hidden="true"></span>
+
+						</div>
+					</a>
+					<a href="#google">
+						<div class="google">
+							<span class="fa fa-google-plus" aria-hidden="true"></span>
+						</div>
+					</a>
+				</div>
+			</div>
+				<p class="signup">已經有帳號了? <a href="/login/" class="signuplink">登入</a></p>
+			</div>
+
+
+			<!-- copyright -->
+			<!-- //copyright -->
+		</div>
+	</div>
+</section>
+</body>
+</html>
