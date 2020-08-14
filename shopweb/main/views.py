@@ -39,8 +39,6 @@ from django.db import transaction
 
 
 class UsersViewSet(viewsets.ModelViewSet):
-    queryset = Users.objects.all()
-    serializer_class = UsersSerializer
 
     @list_route(methods=['post'])
     def login(self, request):
@@ -123,8 +121,6 @@ class UsersViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
 
     @list_route(methods=['post'])
     def ajax_time(self, request):  # 限時特賣的AJAX
