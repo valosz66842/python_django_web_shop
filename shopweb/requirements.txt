@@ -30,5 +30,5 @@ asset
 websocket
 websocket-client 
 tornado
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 mysqlclient-1.4.6-cp37-cp37m-win_amd64.whl
